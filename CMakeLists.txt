@@ -39,6 +39,9 @@ add_subdirectory(${SRC_DIR})
 # Tests
 option(BUILD_TESTS "Build tests" OFF)
 if(BUILD_TESTS)
+find_package(GTest REQUIRED)
+
+    add_library(${PROJECT_NAME}_library ${SRC_DIR}/main.cpp)
     enable_testing()
     add_subdirectory(${TEST_DIR})
 endif()
