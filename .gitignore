@@ -51,3 +51,9 @@ output/
 
 # VSCodeCounter directory
 .VSCodeCounter
+
+# Cache directory
+.cache
+
+# VSCode workspace settings
+.vscode
