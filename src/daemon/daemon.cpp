@@ -3,11 +3,14 @@
 
 namespace Daemon {
 
-Daemon::Daemon(DaemonOptions::OptionType option) {
+Daemon::Daemon(DaemonOptions::OptionType option,
+               std::shared_ptr<Logger::Logger> logger)
+    : logger(logger) {
   switch (option) {
   case DaemonOptions::OptionType::START:
     // check if the daemon is already running
     // if not, start the daemon
+    logger->log("Starting daemon");
     daemonize();
     // save the pid to a file ??
     // run the uptimechecker loop
