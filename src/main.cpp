@@ -2,16 +2,18 @@
 #include "daemon/daemon.hpp"
 #include "daemon/daemonOptions.hpp"
 #include "logger/consoleLogger.hpp"
+#include "setup/setup.hpp"
 #include <cstdlib>
 #include <iostream>
-
 int main(int argc, char *argv[]) {
   auto options = CliArguments::Options(argc, argv);
-  auto logger = std::make_shared<Logger::ConsoleLogger>();
+
+  Setup::Setup setup;
 
   switch (options.mode) {
   case CliArguments::Options::Mode::Daemon: {
-    Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::START, logger);
+    Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::START,
+                          setup.fileLogger);
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Terminal: {
