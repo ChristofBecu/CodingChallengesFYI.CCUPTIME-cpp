@@ -1,4 +1,5 @@
 #include "cliArgs/options.hpp"
+#include "daemon/daemon.hpp"
 #include <cstdlib>
 #include <iostream>
 
@@ -7,8 +8,7 @@ int main(int argc, char *argv[]) {
 
   switch (options.mode) {
   case CliArguments::Options::Mode::Daemon: {
-
-    std::cout << "Starting as daemon" << std::endl;
+    Daemon::Daemon daemon;
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Terminal: {
