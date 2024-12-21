@@ -7,7 +7,6 @@
 #include <cstring>
 #include <dirent.h>
 #include <fcntl.h>
-#include <iostream>
 #include <sched.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -20,10 +19,10 @@ class Daemon {
 public:
   Daemon(DaemonOptions::OptionType option =
              DaemonOptions::OptionType::START); // default start
-  void kill();
-  void status();
 
 private:
+  void kill();
+  void status();
   void daemonize();
 };
 

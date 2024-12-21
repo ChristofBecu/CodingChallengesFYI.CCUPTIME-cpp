@@ -1,4 +1,5 @@
 #include "daemon/daemon.hpp"
+#include <iostream>
 
 namespace Daemon {
 
