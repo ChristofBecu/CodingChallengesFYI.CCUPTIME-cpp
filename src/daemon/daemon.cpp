@@ -10,7 +10,7 @@ Daemon::Daemon(DaemonOptions::OptionType option,
   case DaemonOptions::OptionType::START:
     // check if the daemon is already running
     // if not, start the daemon
-    logger->log("Starting daemon");
+    logger->log("INFO", "Starting daemon");
     daemonize();
     // save the pid to a file ??
     // run the uptimechecker loop

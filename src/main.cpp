@@ -1,7 +1,6 @@
 #include "cliArgs/options.hpp"
 #include "daemon/daemon.hpp"
 #include "daemon/daemonOptions.hpp"
-#include "logger/consoleLogger.hpp"
 #include "setup/setup.hpp"
 #include <cstdlib>
 #include <iostream>
@@ -13,14 +12,15 @@ int main(int argc, char *argv[]) {
   switch (options.mode) {
   case CliArguments::Options::Mode::Daemon: {
     Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::START,
-                          setup.fileLogger);
+                          setup.consoleLogger);
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Terminal: {
-    std::cout << "Starting as terminal" << std::endl;
+    setup.consoleLogger->log("INFO", "Starting as terminal");
     return (EXIT_SUCCESS);
   }
   default: {
+    setup.consoleLogger->log("ERROR", "Unknown mode");
     std::cerr << "Unknown mode\n";
     return (EXIT_FAILURE);
   }

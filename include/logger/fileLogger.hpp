@@ -8,7 +8,7 @@ namespace Logger {
 class FileLogger : public Logger {
 public:
   FileLogger(const std::string &logFile);
-  void log(const std::string &message) override;
+  void log(const std::string &level, const std::string &message) override;
 
 private:
   std::string logFile;
