@@ -43,9 +43,12 @@ void closeFileDescriptors(int start) {
 }
 
 void setupSignals() {
+  // prevent accumulation of zombie processes
   if (signal(SIGCHLD, SIG_IGN) == SIG_ERR) {
     handleError("Failed to ignore SIGCHLD");
   }
+  // ensure the daemon continues running after closing the terminal where it was
+  // started
   if (signal(SIGHUP, SIG_IGN) == SIG_ERR) {
     handleError("Failed to ignore SIGHUP");
   }
@@ -60,6 +63,7 @@ void Daemon::status() {
 }
 
 void redirectFileDescriptors() {
+  // standard input, output, error are redirected to /dev/null
   for (int fd = 0; fd <= 2; ++fd) {
     int devNull = open("/dev/null", fd == 0 ? O_RDONLY : O_WRONLY);
     if (devNull == -1) {
@@ -94,13 +98,14 @@ void Daemon::daemonize() {
   umask(0);
 
   // change working directory to root
-  // temporaly disabled until logging has an absolute path
-  // if (chdir("/") < 0) {
-  //   handleError("Failed to change working directory to root");
-  // }
+  if (chdir("/") < 0) {
+    handleError("Failed to change working directory to root");
+  }
 
   redirectFileDescriptors();
 
+  // 0, 1, 2 are standard input, output, error,
+  // they are now redirected to /dev/null
   closeFileDescriptors(3);
 }
 
