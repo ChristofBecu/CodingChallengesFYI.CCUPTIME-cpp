@@ -1,5 +1,6 @@
 #include "daemon/daemon.hpp"
 #include "logger/logger.hpp"
+#include "uptime/checker.hpp"
 #include <iostream>
 
 namespace Daemon {
@@ -8,24 +9,25 @@ Daemon::Daemon(DaemonOptions::OptionType option,
                std::shared_ptr<Logger::Logger> logger)
     : logger(logger) {
   switch (option) {
-  case DaemonOptions::OptionType::START:
+  case DaemonOptions::OptionType::START: {
     // check if the daemon is already running
     // if not, start the daemon
     logger->log(Logger::LogLevel::INFO, "Starting daemon");
     daemonize();
     // save the pid to a file ??
     // run the uptimechecker loop
-    while (true) {
-      // check the uptime
-      sleep(5);
-    }
+    Uptime::Checker checker(logger);
     break;
-  case DaemonOptions::OptionType::KILL:
+  }
+  case DaemonOptions::OptionType::KILL: {
+
     kill();
     break;
-  case DaemonOptions::OptionType::STATUS:
+  }
+  case DaemonOptions::OptionType::STATUS: {
     status();
     break;
+  }
   }
 }
 
@@ -92,9 +94,10 @@ void Daemon::daemonize() {
   umask(0);
 
   // change working directory to root
-  if (chdir("/") < 0) {
-    handleError("Failed to change working directory to root");
-  }
+  // temporaly disabled until logging has an absolute path
+  // if (chdir("/") < 0) {
+  //   handleError("Failed to change working directory to root");
+  // }
 
   redirectFileDescriptors();
 
