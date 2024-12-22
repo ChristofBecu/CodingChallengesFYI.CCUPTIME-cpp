@@ -45,16 +45,16 @@ void CliArguments::Options::handleOption(std::string &arg) {
     mode = Mode::Daemon;
     break;
   case DAEMONKILL:
-    mode = Mode::Daemon;
+    mode = Mode::Kill;
     break;
   case DAEMONSTATUS:
-    mode = Mode::Daemon;
+    mode = Mode::Status;
     break;
   case TERMINALSTART:
     mode = Mode::Terminal;
     break;
   case LISTWEBSITES:
-    std::cout << "Listing websites\n";
+    mode = Mode::List;
     break;
   }
 }

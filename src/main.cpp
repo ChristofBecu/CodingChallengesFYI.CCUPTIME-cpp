@@ -6,8 +6,6 @@
 #include <cstdlib>
 #include <iostream>
 
-// Assuming logLevel is an enum, add its declaration here
-
 int main(int argc, char *argv[]) {
   auto options = CliArguments::Options(argc, argv);
 
@@ -20,7 +18,21 @@ int main(int argc, char *argv[]) {
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Terminal: {
-    setup.consoleLogger->log(Logger::LogLevel::INFO, "Starting as terminal");
+    setup.fileLogger->log(Logger::LogLevel::INFO, "Starting as terminal");
+    return (EXIT_SUCCESS);
+  }
+  case CliArguments::Options::Mode::Kill: {
+    Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::KILL,
+                          setup.fileLogger);
+    return (EXIT_SUCCESS);
+  }
+  case CliArguments::Options::Mode::Status: {
+    Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::STATUS,
+                          setup.fileLogger);
+    return (EXIT_SUCCESS);
+  }
+  case CliArguments::Options::Mode::List: {
+    setup.consoleLogger->log(Logger::LogLevel::INFO, "Listing websites");
     return (EXIT_SUCCESS);
   }
   default: {
@@ -29,6 +41,4 @@ int main(int argc, char *argv[]) {
     return (EXIT_FAILURE);
   }
   }
-
-  std::cout << "Hello World!" << std::endl;
 }

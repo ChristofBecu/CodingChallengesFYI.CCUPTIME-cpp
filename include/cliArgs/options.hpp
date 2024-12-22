@@ -25,7 +25,7 @@ public:
   void parseArguments(int argc, char *argv[]);
   const std::unordered_map<std::string, OptionType> &getOptionsMap();
 
-  enum class Mode { Daemon, Terminal, Unknown };
+  enum class Mode { Daemon, Kill, Status, Terminal, Unknown, List };
   Mode mode;
 };
 } // namespace CliArguments
