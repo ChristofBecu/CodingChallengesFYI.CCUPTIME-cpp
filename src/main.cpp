@@ -3,6 +3,7 @@
 #include "daemon/daemonOptions.hpp"
 #include "logger/logger.hpp"
 #include "setup/setup.hpp"
+#include "uptime/checker.hpp"
 #include <cstdlib>
 #include <iostream>
 
@@ -14,21 +15,23 @@ int main(int argc, char *argv[]) {
   switch (options.mode) {
   case CliArguments::Options::Mode::Daemon: {
     Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::START,
-                          setup.consoleLogger);
+                          setup.fileLogger);
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Terminal: {
-    setup.fileLogger->log(Logger::LogLevel::INFO, "Starting as terminal");
+    setup.consoleLogger->log(Logger::LogLevel::INFO, "Starting as terminal");
+    Uptime::Checker checker(setup.consoleLogger);
+
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Kill: {
     Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::KILL,
-                          setup.fileLogger);
+                          setup.consoleLogger);
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Status: {
     Daemon::Daemon daemon(Daemon::DaemonOptions::OptionType::STATUS,
-                          setup.fileLogger);
+                          setup.consoleLogger);
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::List: {
