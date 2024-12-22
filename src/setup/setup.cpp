@@ -1,24 +1,40 @@
 #include "setup/setup.hpp"
-#include "logger/consoleLogger.hpp"
-#include "logger/fileLogger.hpp"
-#include <memory>
 
 Setup::Setup::Setup() {
+
+  Setup::homeDir = std::string(getenv("HOME"));
+  Setup::workDir = homeDir + "/.ccuptime";
+  Setup::logPath = workDir + "/ccuptime.log";
+  Setup::configPath = workDir + "/config.yaml";
   CreateDirectories();
   CreateFiles();
   SetupLoggers();
 }
 
 void Setup::Setup::CreateDirectories() {
-  // create directories
+  std::cout << Setup::workDir << "\n";
+  if (!std::filesystem::exists(Setup::workDir)) {
+    std::cout << "Creating work directory\n";
+    std::filesystem::create_directory(Setup::workDir);
+  }
 }
 
 void Setup::Setup::CreateFiles() {
-  // create files
+  std::cout << Setup::logPath << "\n";
+  if (!std::filesystem::exists(Setup::logPath)) {
+    std::cout << "Creating log file\n";
+    std::ofstream file(Setup::logPath);
+    file.close();
+  }
+  if (!std::filesystem::exists(Setup::configPath)) {
+    std::cout << "Creating config file\n";
+    std::ofstream file(Setup::configPath);
+    file.close();
+  }
 }
 
 void Setup::Setup::SetupLoggers() {
-  std::cout << "Setting up loggers" << std::endl;
   Setup::Setup::consoleLogger = std::make_shared<Logger::ConsoleLogger>();
-  Setup::Setup::fileLogger = std::make_shared<Logger::FileLogger>("log.txt");
+  Setup::Setup::fileLogger =
+      std::make_shared<Logger::FileLogger>(Setup::logPath);
 }
