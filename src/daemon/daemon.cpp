@@ -1,4 +1,5 @@
 #include "daemon/daemon.hpp"
+#include "logger/logger.hpp"
 #include <iostream>
 
 namespace Daemon {
@@ -10,7 +11,7 @@ Daemon::Daemon(DaemonOptions::OptionType option,
   case DaemonOptions::OptionType::START:
     // check if the daemon is already running
     // if not, start the daemon
-    logger->log("INFO", "Starting daemon");
+    logger->log(Logger::LogLevel::INFO, "Starting daemon");
     daemonize();
     // save the pid to a file ??
     // run the uptimechecker loop

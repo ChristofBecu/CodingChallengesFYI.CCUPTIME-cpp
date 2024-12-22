@@ -1,4 +1,6 @@
 #include "logger/fileLogger.hpp"
+#include "logger/logger.hpp"
+#include "utils/dateTimeUtils.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -6,9 +8,9 @@ namespace Logger {
 
 FileLogger::FileLogger(const std::string &logFile) : logFile(logFile) {}
 
-void FileLogger::log(const std::string &level, const std::string &message) {
+void FileLogger::log(LogLevel level, const std::string &message) {
   std::ofstream file(logFile, std::ios::app);
-  file << level << " : " << message << std::endl;
+  file << logStringBuilder(level, message) << std::endl;
   file.close();
 }
 

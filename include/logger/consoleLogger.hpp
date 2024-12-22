@@ -9,7 +9,7 @@ namespace Logger {
 class ConsoleLogger : public Logger {
 public:
   ConsoleLogger();
-  void log(const std::string &level, const std::string &message) override;
+  void log(LogLevel level, const std::string &message) override;
 };
 
 } // namespace Logger

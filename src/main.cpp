@@ -1,9 +1,13 @@
 #include "cliArgs/options.hpp"
 #include "daemon/daemon.hpp"
 #include "daemon/daemonOptions.hpp"
+#include "logger/logger.hpp"
 #include "setup/setup.hpp"
 #include <cstdlib>
 #include <iostream>
+
+// Assuming logLevel is an enum, add its declaration here
+
 int main(int argc, char *argv[]) {
   auto options = CliArguments::Options(argc, argv);
 
@@ -16,11 +20,11 @@ int main(int argc, char *argv[]) {
     return (EXIT_SUCCESS);
   }
   case CliArguments::Options::Mode::Terminal: {
-    setup.consoleLogger->log("INFO", "Starting as terminal");
+    setup.consoleLogger->log(Logger::LogLevel::INFO, "Starting as terminal");
     return (EXIT_SUCCESS);
   }
   default: {
-    setup.consoleLogger->log("ERROR", "Unknown mode");
+    setup.consoleLogger->log(Logger::LogLevel::FATAL, "Unknown mode");
     std::cerr << "Unknown mode\n";
     return (EXIT_FAILURE);
   }
