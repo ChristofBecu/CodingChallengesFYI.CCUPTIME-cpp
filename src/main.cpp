@@ -4,6 +4,7 @@
 #include "logger/logger.hpp"
 #include "setup/setup.hpp"
 #include "uptime/checker.hpp"
+#include <cerrno>
 #include <cstdlib>
 #include <iostream>
 

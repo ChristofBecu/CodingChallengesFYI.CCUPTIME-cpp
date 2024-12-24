@@ -27,6 +27,7 @@ private:
   void kill();
   void status();
   void daemonize();
+  pid_t getPidFromProcesses();
 };
 
 } // namespace Daemon

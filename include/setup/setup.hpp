@@ -11,6 +11,7 @@
 namespace Setup {
 
 class Setup {
+
 public:
   Setup();
   std::shared_ptr<Logger::FileLogger> fileLogger;

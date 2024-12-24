@@ -1,7 +1,11 @@
 #include "daemon/daemon.hpp"
 #include "logger/logger.hpp"
 #include "uptime/checker.hpp"
+#include <algorithm>
+#include <cerrno>
 #include <iostream>
+#include <setup/setup.hpp>
+#include <sys/types.h>
 
 namespace Daemon {
 
@@ -20,7 +24,6 @@ Daemon::Daemon(DaemonOptions::OptionType option,
     break;
   }
   case DaemonOptions::OptionType::KILL: {
-
     kill();
     break;
   }
@@ -52,10 +55,6 @@ void setupSignals() {
   if (signal(SIGHUP, SIG_IGN) == SIG_ERR) {
     handleError("Failed to ignore SIGHUP");
   }
-}
-
-void Daemon::kill() {
-  // kill the daemon
 }
 
 void Daemon::status() {
@@ -107,6 +106,57 @@ void Daemon::daemonize() {
   // 0, 1, 2 are standard input, output, error,
   // they are now redirected to /dev/null
   closeFileDescriptors(3);
+}
+
+pid_t Daemon::getPidFromProcesses() {
+  pid_t currentPid = getpid(); // Get the PID of the current process
+  DIR *dir = opendir("/proc");
+  if (dir == nullptr) {
+    logger->log(Logger::LogLevel::ERROR, "Failed to open /proc directory");
+    return -1;
+  }
+
+  struct dirent *entry;
+  while ((entry = readdir(dir)) != nullptr) {
+    if (entry->d_type == DT_DIR) {
+      std::string pidStr = entry->d_name;
+      if (std::all_of(pidStr.begin(), pidStr.end(), ::isdigit)) {
+        pid_t pid = std::stoi(pidStr);
+        if (pid == currentPid) {
+          continue; // Skip the current running process
+        }
+        std::string cmdlinePath = "/proc/" + pidStr + "/cmdline";
+        std::ifstream cmdlineFile(cmdlinePath);
+        if (cmdlineFile.is_open()) {
+          std::string cmdline;
+          std::getline(cmdlineFile, cmdline);
+          if (cmdline.find(program_invocation_short_name) !=
+              std::string::npos) {
+            std::cout << "Found ccuptime process with PID " << pidStr << "\n";
+            closedir(dir);
+            return pid;
+          }
+        }
+      }
+    }
+  }
+  return -1;
+}
+
+void Daemon::kill() {
+  logger->log(Logger::LogLevel::INFO, "Killing the daemon\n");
+  pid_t pid = Daemon::getPidFromProcesses();
+  if (pid == -1) {
+    logger->log(Logger::LogLevel::ERROR,
+                "Daemon with pid " + std::to_string(pid) + " not found\n");
+    return;
+  }
+
+  logger->log(Logger::LogLevel::INFO,
+              "Killing the daemon " + std::to_string(pid) + "\n");
+  if (::kill(pid, SIGTERM) == -1) {
+    handleError("Failed to kill the daemon");
+  }
 }
 
 } // namespace Daemon
